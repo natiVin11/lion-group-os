@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // מותאם לעבודה בענן (Vercel + Fly.io)
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -13,9 +13,9 @@ datasource db {
 
 model SystemSettings {
   id               String   @id @default("global")
-  forwardingNumber String   @default("972501234567") // המספר שאליו הבוט ישלח את הלידים החמים
-  qrCode           String?  @db.Text                 // הברקוד שהבוט מייצר ב-Fly.io ונשמר כדי שהפאנל יציג אותו
-  botStatus        String   @default("DISCONNECTED") // מצב חיבור הבוט: WAITING_QR, CONNECTED, DISCONNECTED
+  forwardingNumber String   @default("972501234567")
+  qrCode           String?  @db.Text
+  botStatus        String   @default("DISCONNECTED")
   updatedAt        DateTime @updatedAt
 }
 
@@ -24,51 +24,59 @@ model Lead {
   name        String   @default("לקוח פוטנציאלי")
   phone       String   @unique
   serviceType String?
-  budget      String?                                  // שדה התקציב לסינון ותעדוף לידים (Lead Scoring)
+  budget      String?
   status      String   @default("NEW")
   botState    String   @default("INITIAL")
   createdAt   DateTime @default(now())
 }
 
 // ==========================================
-// ניהול תוכן, חבילות ותיק עבודות דינמי
+// ניהול תוכן, קטגוריות וחבילות
 // ==========================================
 
-// טבלת חבילות דינמיות - לשליטה מלאה על מחירים מפאנל האדמין
+// טבלה חדשה להגדרת קטגוריות (זה מה שהיה חסר!)
+model Category {
+  id         String      @id @default(cuid())
+  name       String
+  slug       String      @unique // הקטגוריה נשלפת לפי ה-slug הזה
+  portfolios Portfolio[] // קשר: לקטגוריה יש הרבה פרויקטים
+  createdAt  DateTime    @default(now())
+}
+
 model Package {
   id          String   @id @default(cuid())
-  page        String   // מזהה באיזה עמוד להציג: 'home', 'web', 'marketing', 'automations'
-  title       String   // שם החבילה (לדוגמה: Business Identity)
-  price       String   // מחיר (לדוגמה: החל מ-₪3,500)
-  description String   // תיאור החבילה
-  features    String   // הפיצ'רים בחבילה (טקסט מופרד בפסיקים)
-  isGold      Boolean  @default(false) // חבילת Premium מודגשת (זהב)
+  page        String
+  title       String
+  price       String
+  description String
+  features    String
+  isGold      Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
 
-// דוגמאות לעבודות בגלריה
 model Portfolio {
-  id        String   @id @default(cuid())
-  title     String
-  category  String   // שיוך קטגוריה: 'web', 'marketing', 'automations'
-  imageUrl  String   // כתובת ה-URL של התמונה
-  link      String?  // קישור חיצוני לצפייה בפרויקט (אופציונלי)
-  createdAt DateTime @default(now())
+  id         String    @id @default(cuid())
+  title      String
+  imageUrl   String
+  link       String?
+  createdAt  DateTime  @default(now())
+
+  // שיוך לקטגוריה
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id])
 }
 
-// לקוחות ממליצים
 model Testimonial {
   id        String   @id @default(cuid())
   author    String
   role      String
-  text      String   // תוכן ההמלצה
+  text      String
   createdAt DateTime @default(now())
 }
 
-// לוגואים של חברות (Trusted By)
 model ClientLogo {
   id        String   @id @default(cuid())
-  name      String   // שם החברה
-  imageUrl  String   // URL של הלוגו
+  name      String
+  imageUrl  String
   createdAt DateTime @default(now())
 }
