@@ -1,0 +1,12 @@
+app = "lion-bot-worker"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  # DATABASE_URL = "postgres://..." (מוגדר דרך הדאשבורד של Fly.io)
+
+[processes]
+  app = "npx tsx bot.ts"
