@@ -34,12 +34,12 @@ model Lead {
 // ניהול תוכן, קטגוריות וחבילות
 // ==========================================
 
-// טבלה חדשה להגדרת קטגוריות (זה מה שהיה חסר!)
 model Category {
   id         String      @id @default(cuid())
   name       String
-  slug       String      @unique // הקטגוריה נשלפת לפי ה-slug הזה
-  portfolios Portfolio[] // קשר: לקטגוריה יש הרבה פרויקטים
+  slug       String      @unique
+  // הגדרת הקשר בצורה מפורשת
+  portfolios Portfolio[]
   createdAt  DateTime    @default(now())
 }
 
@@ -61,9 +61,9 @@ model Portfolio {
   link       String?
   createdAt  DateTime  @default(now())
 
-  // שיוך לקטגוריה
+  // שיוך לקטגוריה - הוספת onDelete: Cascade לניהול נכון של נתונים
   categoryId String
-  category   Category  @relation(fields: [categoryId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model Testimonial {
