@@ -9,7 +9,7 @@
     "bot": "tsx whatsapp/bot.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run bot\"",
     "db:push": "prisma db push",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && prisma db push"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",
