@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'; // ייבוא הלקוח המשותף (הסינגלטון)
 import HomePageClient from './components/HomePageClient';
+import { PrismaClient } from '@prisma/client';
 
-// מונע שמירת קאש - כדי שכל שינוי בפאנל האדמין יופיע מיד באתר!
+const prisma = new PrismaClient();
 export const revalidate = 0;
 
 export default async function HomePage() {

@@ -1,6 +1,8 @@
-import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import { PrismaClient } from '@prisma/client';
 
+// יצירת מופע של ה-Client
+const prisma = new PrismaClient();
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
     // שליפת הקטגוריה והעבודות המשויכות אליה מהדאטה-בייס
     const category = await prisma.category.findUnique({

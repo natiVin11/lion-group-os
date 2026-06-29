@@ -1,8 +1,8 @@
-import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import QRCode from 'react-qr-code';
+import { PrismaClient } from '@prisma/client';
 
-// --- Server Actions (מוגדרות מחוץ לקומפוננטה כדי להבטיח עבודה תקינה ב-Next.js) ---
+const prisma = new PrismaClient();
 
 async function updateForwardingNumber(formData: FormData) {
     "use server";
